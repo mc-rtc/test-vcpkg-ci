@@ -4,6 +4,6 @@
   "homepage": "",
   "description": "NewController for mc_rtc",
   "dependencies": [
-    "rbdyn"
+    "spacevecalg"
   ]
 }
