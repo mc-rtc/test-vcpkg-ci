@@ -1,0 +1,41 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - '**'
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        #os: [ubuntu-18.04, ubuntu-20.04, macos-latest, windows-latest]
+        os: [windows-latest]
+        build-type: [RelWithDebInfo]
+        compiler: [gcc]
+    runs-on: ${{ matrix.os }}
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        submodules: recursive
+    - name: Install dependencies
+      uses: jrl-umi3218/github-actions/install-dependencies@master
+      with:
+        compiler: ${{ matrix.compiler }}
+        build-type: ${{ matrix.build-type }}
+        ubuntu: |
+          apt: libmc-rtc-dev
+          apt-mirrors:
+            mc-rtc:
+              cloudsmith: mc-rtc/head
+        macos: |
+          brew-taps: mc-rtc/mc-rtc
+          brew: mc_rtc
+        windows: |
+          vcpkg:
+            repo: microsoft/vcpkg
+    - name: Build and test
+      uses: jrl-umi3218/github-actions/build-cmake-project@master
+      with:
+        compiler: ${{ matrix.compiler }}
+        build-type: ${{ matrix.build-type }}
